@@ -8,7 +8,7 @@ const scheduleSchema = z.object({
   subjectName: z.string().min(1, 'Nama mata kuliah wajib diisi'),
   lecturer: z.string().max(100).optional(),
   room: z.string().max(50).optional(),
-  dayOfWeek: z.number().min(0).max(6), // 0-6
+  dayOfWeek: z.number().min(0).max(6),
   startTime: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Format waktu: HH:mm'),
   durationMin: z.number().min(15).max(180).default(90),
   alarmOffsetMin: z.number().min(5).max(120).default(30),
@@ -29,6 +29,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json(schedules);
   } catch (error) {
+    console.error('Get schedules error:', error);
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 }
@@ -42,19 +43,29 @@ export async function POST(req: Request) {
 
     const body = await req.json();
     const parsed = scheduleSchema.safeParse(body);
+    
     if (!parsed.success) {
-      return NextResponse.json({ error: 'Data tidak valid', details: parsed.error.flatten() }, { status: 400 });
+      return NextResponse.json({ 
+        error: 'Data tidak valid', 
+        details: parsed.error.flatten() 
+      }, { status: 400 });
     }
 
+    // ✅ FIX: Tambahkan 'data:' sebelum objek
     const schedule = await prisma.lectureSchedule.create({
-       {
+      data: {  // ← INI YANG TERLEWAT SEBELUMNYA!
         ...parsed.data,
         userId: payload.id,
       },
     });
 
-    return NextResponse.json({ message: 'Jadwal berhasil ditambahkan', schedule }, { status: 201 });
+    return NextResponse.json({ 
+      message: 'Jadwal berhasil ditambahkan', 
+      schedule 
+    }, { status: 201 });
+    
   } catch (error) {
+    console.error('Create schedule error:', error);
     return NextResponse.json({ error: 'Gagal menambah jadwal' }, { status: 500 });
   }
 }
@@ -67,6 +78,7 @@ export async function PUT(req: Request) {
     const payload = verifyToken(token);
 
     const { id, ...updates } = await req.json();
+    
     const parsed = scheduleSchema.partial().safeParse(updates);
     if (!parsed.success) {
       return NextResponse.json({ error: 'Data tidak valid' }, { status: 400 });
@@ -74,11 +86,13 @@ export async function PUT(req: Request) {
 
     const schedule = await prisma.lectureSchedule.update({
       where: { id, userId: payload.id },
-       parsed.data,
+      data: parsed.data, // ✅ 'data:' sudah benar di sini
     });
 
     return NextResponse.json({ message: 'Jadwal berhasil diupdate', schedule });
+    
   } catch (error) {
+    console.error('Update schedule error:', error);
     return NextResponse.json({ error: 'Gagal update jadwal' }, { status: 500 });
   }
 }
@@ -91,12 +105,15 @@ export async function DELETE(req: Request) {
     const payload = verifyToken(token);
 
     const { id } = await req.json();
+    
     await prisma.lectureSchedule.delete({
       where: { id, userId: payload.id },
     });
 
     return NextResponse.json({ message: 'Jadwal berhasil dihapus' });
+    
   } catch (error) {
+    console.error('Delete schedule error:', error);
     return NextResponse.json({ error: 'Gagal hapus jadwal' }, { status: 500 });
   }
 }
