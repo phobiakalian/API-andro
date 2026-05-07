@@ -4,42 +4,46 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://neondb_owner:npg_jTYGkw37ReWm@ep-young-mode-aoajrimr-pooler.c-2.ap-southeast-1.aws.neon.tech/neondb?channel_binding=require&sslmode=require"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id        String   @id @default(cuid())
-  username  String   @unique
+  id        String            @id @default(cuid())
+  username  String            @unique
   password  String
   fullName  String?
-  email     String?  @unique
+  email     String?           @unique
   bio       String?
   avatarUrl String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  
+  // ✅ TAMBAHKAN INI: Relasi ke LectureSchedule
+  schedules LectureSchedule[]
 }
 
 model LectureSchedule {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String   @id @default(cuid())
+  userId         String
+  // ✅ Tambahkan 'map' agar field 'user' tidak bentrok dengan Prisma client
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "lecture_user")
   
-  subjectName String   // Nama mata kuliah
-  lecturer    String?  // Nama dosen
-  room        String?  // Ruang kelas
+  subjectName    String
+  lecturer       String?
+  room           String?
   
   // Waktu kuliah
-  dayOfWeek   Int      // 0=Sunday, 1=Monday, ..., 6=Saturday
-  startTime   String   // Format "HH:mm" (24-hour), contoh: "08:00"
-  durationMin Int      @default(90)  // Durasi dalam menit
+  dayOfWeek      Int      // 0=Sunday, 1=Monday, ..., 6=Saturday
+  startTime      String   // Format "HH:mm"
+  durationMin    Int      @default(90)
   
   // Alarm settings
-  alarmOffsetMin Int   @default(30)  // Berapa menit sebelum kuliah alarm berbunyi
-  isEnabled     Boolean @default(true)
-  soundUri      String? // URI suara custom (opsional)
+  alarmOffsetMin Int      @default(30)
+  isEnabled      Boolean  @default(true)
+  soundUri       String?
   
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@index([userId])
   @@map("lecture_schedules")
