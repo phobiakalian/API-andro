@@ -51,9 +51,8 @@ export async function POST(req: Request) {
       }, { status: 400 });
     }
 
-    // ✅ FIX: Tambahkan 'data:' sebelum objek
     const schedule = await prisma.lectureSchedule.create({
-      data: {  // ← INI YANG TERLEWAT SEBELUMNYA!
+      data: {
         ...parsed.data,
         userId: payload.id,
       },
@@ -86,7 +85,7 @@ export async function PUT(req: Request) {
 
     const schedule = await prisma.lectureSchedule.update({
       where: { id, userId: payload.id },
-      data: parsed.data, // ✅ 'data:' sudah benar di sini
+      data: parsed.data,
     });
 
     return NextResponse.json({ message: 'Jadwal berhasil diupdate', schedule });
