@@ -25,19 +25,16 @@ model User {
 model LectureSchedule {
   id             String   @id @default(cuid())
   userId         String
-  // ✅ Tambahkan 'map' agar field 'user' tidak bentrok dengan Prisma client
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "lecture_user")
   
   subjectName    String
   lecturer       String?
   room           String?
   
-  // Waktu kuliah
-  dayOfWeek      Int      // 0=Sunday, 1=Monday, ..., 6=Saturday
-  startTime      String   // Format "HH:mm"
+  dayOfWeek      Int
+  startTime      String
   durationMin    Int      @default(90)
   
-  // Alarm settings
   alarmOffsetMin Int      @default(30)
   isEnabled      Boolean  @default(true)
   soundUri       String?
