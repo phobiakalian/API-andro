@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
 import { verifyToken, extractTokenFromHeader } from '@/lib/auth';
 import { z } from 'zod';
-
+// Validasi input menggunakan Zod
 const passwordSchema = z.object({
   oldPassword: z.string().min(1, 'Password lama wajib diisi'),
   newPassword: z.string().min(6, 'Password baru minimal 6 karakter')
