@@ -18,7 +18,6 @@ export async function POST(req: Request) {
 
     // Upload ke Vercel Blob (otomatis dapat URL publik)
     const blob = await put(`avatars/${payload.id}-${Date.now()}.jpg`, file, {
-      access: 'public',
       contentType: file.type,
     });
 
