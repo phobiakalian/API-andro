@@ -1,31 +1,30 @@
 {
-    "name": "api-andro",
-    "version": "1.0.0",
-    "private": true,
-    "scripts": {
-      "dev": "next dev",
-      "build": "next build",
-      "start": "next start",
-      "lint": "next lint",
-      "db:generate": "prisma generate",
-      "db:push": "prisma db push"
-    },
-    "dependencies": {
-      "@prisma/client": "^5.14.0",
-      "bcrypt": "^5.1.1",
-      "jsonwebtoken": "^9.0.2",
-      "next": "^14.2.3",
-      "react": "^18.3.1",
-      "react-dom": "^18.3.1",
-      "zod": "^3.23.8"
-    },
-    "devDependencies": {
-      "@types/bcrypt": "^5.0.2",
-      "@types/jsonwebtoken": "^9.0.6",
-      "@types/node": "^20.12.12",
-      "@types/react": "^18.3.3",
-      "@types/react-dom": "^18.3.0",
-      "prisma": "^5.14.0",
-      "typescript": "^5.4.5"
-    }
+  "name": "api-andro",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.14.0",
+    "bcrypt": "^5.1.1",
+    "jsonwebtoken": "^9.0.2",
+    "next": "^14.2.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^20.12.12",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "prisma": "^5.14.0",
+    "typescript": "^5.4.5"
   }
+}
