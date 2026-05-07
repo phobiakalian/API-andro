@@ -18,3 +18,29 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model LectureSchedule {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  subjectName String   // Nama mata kuliah
+  lecturer    String?  // Nama dosen
+  room        String?  // Ruang kelas
+  
+  // Waktu kuliah
+  dayOfWeek   Int      // 0=Sunday, 1=Monday, ..., 6=Saturday
+  startTime   String   // Format "HH:mm" (24-hour), contoh: "08:00"
+  durationMin Int      @default(90)  // Durasi dalam menit
+  
+  // Alarm settings
+  alarmOffsetMin Int   @default(30)  // Berapa menit sebelum kuliah alarm berbunyi
+  isEnabled     Boolean @default(true)
+  soundUri      String? // URI suara custom (opsional)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@map("lecture_schedules")
+}
